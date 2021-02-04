@@ -1,0 +1,104 @@
+from MODELSA.overdraft import Overdraft
+from MODELSA.account import Account
+from typing import List
+import datetime
+0
+# overdraft = Overdraft()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+class OverdraftManger:
+    overdrafts: List[Overdraft] = []
+    
+
+    def create_overdraft(self, account: Account, amount: float):
+        active_account = self.__is_account_active(account)
+        if active_account is True:
+            if amount <= 100000:
+                overdraft_status = self.__is_overdraft_not_active(account=account)
+                if overdraft_status is True:
+                    overdraft = Overdraft(amount=amount, account=account)
+                    overdraft.id = self.__get_id()
+                    overdraft.balance = account
+                    overdraft.account.balance -= amount
+                    overdraft.date = datetime.date.today()
+                else:
+                    print('You have already collected an overdraft. Please pay up')
+            else:
+                print('You cannot collect above 100 thousand')
+        else:
+            print('Your account is inactive')
+
+    def pay_overdraft(self, account_number: str, amount: float):
+        overdraft = self.__get_overdraft(account_number=account_number)
+        if overdraft is not False:
+            overdraft.balance -= amount
+            for overdraft in overdrafts:
+                if overdraft.balance == 0:
+                    overdraft.status == 'inactive'
+                    print('Overdraft has been totally paid')
+                else:
+                    print('an ammount of', amount, 'has been paid into your account. Your pending balance is', overdraft.balance)
+        else:
+            return('No active overdraft found')             
+                    
+    def __check__amount__overdraft(self, account_number: str):
+        for Overdraft in self.overdrafts:
+            if Overdraft.amount <= 100000:
+                return True
+        return False
+
+    
+    def __get_overdraft_initial_balance(self,  amount: float):
+            val = 100000 
+            amount = val
+            return amount       
+        
+
+
+    def __check_if_no_active_overdraft(self, account_number: str):
+            for overdraft in self.overdrafts:
+                if overdraft.account.account_number == account_number:
+                    if overdraft.status == 'active':
+                        return True
+            return False
+    
+    
+
+    def __get_id(self):
+        length = len(self.overdrafts)
+        if length == 0:
+            length += 1
+            return length
+        else:
+            for overdraft in self.overdrafts:
+                if overdraft.id == length:
+                    length += 1
+                    return length
+                else:
+                    continue
+                
+    def __get_overdraft(self, account_number: str):
+        for overdraft in self.overdrafts:
+            if overdraft.account.account_number == account_number:
+                if overdraft.status == 'active':
+                    return overdraft
+                else:
+                    return False
+
+    def __is_account_active(self, account: Account):
+        if account.account_status == False:
+            return False
+        else:
+            return True
+
+    def __is_overdraft_not_active(self, account_number: str):
+        
+        for overdraft in self.overdrafts:
+            if overdraft.status == 'inactive':
+                if overdraft.account.account_number == account_number:
+                    return True
+                else:
+                    return False
+
+    def __show(self, overdraft: Overdraft):
+        print(
+              overdraft.id, '.', ' ', overdraft.account.account_number, ' ',overdraft.account.account_holder.first_name," ", overdraft.amount,
+              ' ', '\t', overdraft.balance, )
